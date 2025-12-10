@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { jsPDF } from 'jspdf';
 
 const SummaryCard = ({ data }) => {
     const [activeTab, setActiveTab] = useState('en'); // 'en', 'ta', 'te'
@@ -16,12 +17,33 @@ const SummaryCard = ({ data }) => {
 
     const handleDownload = () => {
         const text = getContent();
-        const element = document.createElement("a");
-        const file = new Blob([text], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        element.download = `summary_${activeTab}_${data.filename}.txt`;
-        document.body.appendChild(element);
-        element.click();
+        const tabLabel = tabs.find(t => t.id === activeTab).label.split(' ')[0];
+        
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 10;
+        const maxWidth = pageWidth - 2 * margin;
+        
+        // Add title
+        doc.setFontSize(16);
+        doc.text(`${tabLabel} Summary`, margin, margin + 10);
+        
+        // Add filename
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`File: ${data.filename}`, margin, margin + 20);
+        
+        // Reset text color
+        doc.setTextColor(0);
+        doc.setFontSize(11);
+        
+        // Add content with text wrapping
+        const splitText = doc.splitTextToSize(text, maxWidth);
+        doc.text(splitText, margin, margin + 30);
+        
+        // Save PDF
+        doc.save(`summary_${activeTab}_${data.filename.split('.')[0]}.pdf`);
     };
 
     return (
@@ -56,7 +78,7 @@ const SummaryCard = ({ data }) => {
 
             <div className="actions" style={{ padding: '1rem 2rem', borderTop: '1px solid var(--glass-border)', textAlign: 'right' }}>
                 <button className="btn-primary" onClick={handleDownload}>
-                    Download {tabs.find(t => t.id === activeTab).label.split(' ')[0]} Text
+                    Download {tabs.find(t => t.id === activeTab).label.split(' ')[0]} PDF
                 </button>
             </div>
         </div>
