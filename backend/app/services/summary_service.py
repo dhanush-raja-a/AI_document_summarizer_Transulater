@@ -40,6 +40,12 @@ class SummaryEngine:
         
         try:
             response = await chain.ainvoke({"context": safe_text})
-            return response.content
+            # Clean up markdown formatting (remove **, *, ##, etc.)
+            summary = response.content
+            summary = summary.replace('**', '')  # Remove bold markers
+            summary = summary.replace('*', '')   # Remove italic markers
+            summary = summary.replace('##', '')  # Remove heading markers
+            summary = summary.replace('###', '') # Remove subheading markers
+            return summary
         except Exception as e:
             return f"Error generating summary: {str(e)}"
