@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+# Let langchain-groq pull the compatible version of langchain logic
+langchain-groq
+langchain-community 
+pypdf
+python-docx
+deep-translator>=1.11.4
+python-dotenv
+aiofiles
