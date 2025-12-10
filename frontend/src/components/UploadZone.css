@@ -23,16 +23,21 @@
 
 .spinner {
     display: inline-block;
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    font-weight: bold;
+    letter-spacing: 2px;
+    animation: blink 1.4s infinite;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+@keyframes blink {
+    0%, 20%, 50%, 80%, 100% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 0.5;
+    }
+    60% {
+        opacity: 0.7;
     }
 }
